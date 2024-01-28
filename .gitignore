@@ -1,0 +1,4 @@
+# 排除输入文件
+sourceDict/
+# 排除输出文件
+targetDict/
