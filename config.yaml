@@ -2,6 +2,6 @@ rime_ice_dict:
   source_download_dir: "./sourceDict"
   target_download_dir: "./targetDict"
   cn_source_path:
-    "rime_ice.8105.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/41448.dict.yaml
-    "rime_ice.41448.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/8105.dict.yaml
-    "rime_ice.base.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/base.dict.yaml
+    "rime_ice.8105.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/41448.dict.yaml
+    "rime_ice.41448.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/8105.dict.yaml
+    "rime_ice.base.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/base.dict.yaml

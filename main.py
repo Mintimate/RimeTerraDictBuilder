@@ -17,10 +17,11 @@ if __name__ == '__main__':
         os.makedirs(CONVERT_TARGET)
     for download_item in CN_DOWNLOAD_ITEM:
         download_dict_with_request(source_save_path=DOWNLOAD_PATH, target_save_path=CONVERT_TARGET,
-                                   download_url=CN_DOWNLOAD_ITEM[download_item], target_file_name=download_item)
+                                   download_url=CN_DOWNLOAD_ITEM[download_item],
+                                   target_file_name=download_item)
 
     say_somethings("将其中的字典转换为地球拼音字典")
-    terra_dict_start("./targetDict/rime_ice.base.yaml",
+    terra_dict_start("./targetDict/rime_ice.base.dict.yaml",
                      "./targetDict/terra_rime_ice.base.dict.yaml",
                      "terra_rime_ice.base"
                      )

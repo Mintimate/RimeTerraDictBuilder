@@ -22,7 +22,7 @@ def __rename_dict_to_mint_style(source_path, target_path, file_name):
     # 读取文本文件内容
     with open(source_path, 'r', encoding='utf-8') as file:
         content = file.read()
-
+    file_name = file_name.replace(".dict.yaml", "")
     # 替换name中的8015
     content = re.sub(r'name:\s*\d+', f'name: {file_name}', content)
 
