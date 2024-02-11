@@ -13,6 +13,8 @@ if __name__ == '__main__':
     say_somethings("下载雾凇拼音字典")
     if not os.path.exists(DOWNLOAD_PATH):
         os.makedirs(DOWNLOAD_PATH)
+    if not os.path.exists(CONVERT_TARGET):
+        os.makedirs(CONVERT_TARGET)
     for download_item in CN_DOWNLOAD_ITEM:
         download_dict_with_request(source_save_path=DOWNLOAD_PATH, target_save_path=CONVERT_TARGET,
                                    download_url=CN_DOWNLOAD_ITEM[download_item], target_file_name=download_item)
