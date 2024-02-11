@@ -1,3 +1,6 @@
+import re
+from datetime import date
+
 import pandas
 import pandas as pd
 from pypinyin import Style, lazy_pinyin
@@ -16,14 +19,14 @@ NEW_HEADER_DESC = """
 #  - Mintimate's Bilibili: https://space.bilibili.com/355567627
 ---
 
-name: terra_rime_ice.base
-version: "2023-11-29"
+name: {name_placeholder}
+version: "{version_placeholder}"
 sort: by_weight
 ...
 """
 
 
-def prepend_to_file(file_path, text_to_prepend):
+def __prepend_to_file(file_path, text_to_prepend):
     """
     在文件开头插入内容
     :param file_path:
@@ -43,7 +46,7 @@ def prepend_to_file(file_path, text_to_prepend):
 
 
 # 辅助函数，用于查找包含特定内容的行号
-def find_start_row(file_path, start_content):
+def __find_start_row(file_path, start_content):
     with open(file_path, 'r') as file:
         for i, line in enumerate(file):
             # 检查行内容
@@ -65,7 +68,7 @@ def __pinyin_transform(row):
     return pd.Series({'key': row['key'], 'new_value': new_value, 'freq': row['freq']})
 
 
-def make_terra_dict(source_dict: pandas.DataFrame):
+def __make_terra_dict(source_dict: pandas.DataFrame):
     """
     将普通拼音转换为地球拼音
     :param source_dict:
@@ -75,15 +78,41 @@ def make_terra_dict(source_dict: pandas.DataFrame):
     return new_terra_data
 
 
-if __name__ == '__main__':
+def __get_version_code(source_path):
+    # 读取文本文件内容
+    with open(source_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+
+    # 使用正则表达式提取version内容
+    match = re.search(r'version:\s*"([^"]+)"', content)
+
+    # 提取到的版本号
+    if match:
+        version = match.group(1)
+        return version
+    else:
+        # 如果没有找到版本号，使用当前日期作为版本号
+        today = date.today()
+        return today.strftime("%Y-%m-%d")
+
+
+def terra_dict_start(file_input_path=FILE_INPUT, file_output_path=FILE_OUTPUT
+                     , name='terra_rime_ice.base', version=None):
     # 查找开始读取的行号
-    start_row = find_start_row(FILE_INPUT, '...')
+    start_row = __find_start_row(file_input_path, '...')
     header = ['key', 'value', 'freq']
+    if version is None:
+        version = __get_version_code(file_input_path)
     # 确保找到了有效的行号，然后使用Pandas读取文件
     if start_row is not None:
-        data = pd.read_csv(FILE_INPUT, sep='\t', names=header, skiprows=start_row + 1, comment='#')
-        new_data = make_terra_dict(data)
-        new_data.to_csv(FILE_OUTPUT, sep='\t', header=None, index=False)
-        prepend_to_file(FILE_OUTPUT, NEW_HEADER_DESC)
+        data = pd.read_csv(file_input_path, sep='\t', names=header, skiprows=start_row + 1, comment='#')
+        new_data = __make_terra_dict(data)
+        new_data.to_csv(file_output_path, sep='\t', header=None, index=False)
+        new_header_desc_string = NEW_HEADER_DESC.format(name_placeholder=name, version_placeholder=version)
+        __prepend_to_file(file_output_path, new_header_desc_string)
     else:
         print("The specified content '...' was not found in the file.")
+
+
+if __name__ == '__main__':
+    terra_dict_start()
