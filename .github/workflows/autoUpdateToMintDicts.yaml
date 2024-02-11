@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'Mintimate'
 
     steps:
       - name: 检录本仓库
@@ -37,5 +38,6 @@ jobs:
           github_token: ${{ secrets.DEPLOY_TOKEN }}
           repository: Mintimate/oh-my-rime
           coauthor_name: Mintimate
+          coauthor_email: 43734212+Mintimate@users.noreply.github.com
           directory: oh-my-rime/dicts
           message: "AutoUpdate Rime-ice Dicts"

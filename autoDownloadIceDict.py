@@ -34,11 +34,11 @@ def __rename_dict_to_mint_style(source_path, target_path, file_name):
 if __name__ == '__main__':
     from custom_tools import config_dict
     USER_CONFIG = config_dict()
-    CN_DOWNLOAD_ITEM = USER_CONFIG['rime_ice_dict']['cn_source_path']
+    DOWNLOAD_ITEM = USER_CONFIG['rime_ice_dict']['dict_source_path']
     DOWNLOAD_PATH = USER_CONFIG['rime_ice_dict']['source_download_dir']
     CONVERT_TARGET = USER_CONFIG['rime_ice_dict']['target_download_dir']
     if not os.path.exists(DOWNLOAD_PATH):
         os.makedirs(DOWNLOAD_PATH)
-    for download_item in CN_DOWNLOAD_ITEM:
+    for download_item in DOWNLOAD_ITEM:
         download_dict_with_request(source_save_path=DOWNLOAD_PATH, target_save_path=CONVERT_TARGET,
-                                   download_url=CN_DOWNLOAD_ITEM[download_item], target_file_name=download_item)
+                                   download_url=DOWNLOAD_ITEM[download_item], target_file_name=download_item)

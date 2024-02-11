@@ -1,7 +1,13 @@
 rime_ice_dict:
   source_download_dir: "./sourceDict"
   target_download_dir: "./targetDict"
-  cn_source_path:
+  # 基础词典
+  dict_source_path:
     "rime_ice.41448.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/41448.dict.yaml
     "rime_ice.8105.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/8105.dict.yaml
     "rime_ice.base.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/base.dict.yaml
+    "rime_ice.en.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/en_dicts/en.dict.yaml
+    "rime_ice.en_ext.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/en_dicts/en_ext.dict.yaml
+  # 短语词典
+  phrase_source_path:
+    "rime_ice.cn_en.txt": https://github.com/iDvel/rime-ice/raw/main/en_dicts/cn_en.txt
