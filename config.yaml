@@ -6,6 +6,7 @@ rime_ice_dict:
     "rime_ice.41448.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/41448.dict.yaml
     "rime_ice.8105.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/8105.dict.yaml
     "rime_ice.base.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/base.dict.yaml
+    "rime_ice.ext.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/cn_dicts/ext.dict.yaml
     "rime_ice.en.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/en_dicts/en.dict.yaml
     "rime_ice.en_ext.dict.yaml": https://github.com/iDvel/rime-ice/raw/main/en_dicts/en_ext.dict.yaml
   # 短语词典

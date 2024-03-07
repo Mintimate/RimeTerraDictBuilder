@@ -31,3 +31,7 @@ if __name__ == '__main__':
                      "./targetDict/terra_rime_ice.base.dict.yaml",
                      "terra_rime_ice.base"
                      )
+    terra_dict_start("./targetDict/rime_ice.ext.dict.yaml",
+                     "./targetDict/terra_rime_ice.ext.dict.yaml",
+                     "terra_rime_ice.ext"
+                     )
