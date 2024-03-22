@@ -18,6 +18,8 @@ def download_dict_with_request(target_save_path, download_url, target_file_name)
 
 
 if __name__ == '__main__':
+    if not os.path.exists(CONVERT_TARGET):
+        os.makedirs(CONVERT_TARGET)
     for download_item in DOWNLOAD_DICT_ITEM:
         download_dict_with_request(target_save_path=CONVERT_TARGET,download_url=DOWNLOAD_DICT_ITEM[download_item],
                                    target_file_name=download_item)
