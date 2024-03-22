@@ -12,3 +12,8 @@ rime_ice_dict:
   # 短语词典
   phrase_source_path:
     "rime_ice.cn_en.txt": https://github.com/iDvel/rime-ice/raw/main/en_dicts/cn_en.txt
+rime-radical-pinyin:
+  target_download_dir: "./targetDict"
+  # 基础词典
+  dict_source_path:
+    "radical_pinyin.dict.yaml": https://github.com/mirtlecn/rime-radical-pinyin/raw/master/radical_pinyin.dict.yaml
