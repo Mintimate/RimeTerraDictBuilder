@@ -30,7 +30,7 @@ jobs:
       - name: 更新薄荷拼音目录
         run: |
           git clone https://github.com/Mintimate/oh-my-rime.git
-          cp targetDict/* oh-my-rime/dicts/
+          cp targetDict/* oh-my-rime/
           cd oh-my-rime
       - name: Commit & Push changes
         uses: actions-js/push@master
