@@ -25,10 +25,14 @@ def __rename_dict_to_mint_style(source_path, target_path, file_name):
     file_name = file_name.replace(".dict.yaml", "")
     # 替换name中的原本文件名
     content = re.sub(r'name:(\s*)(\S+)', f'name: {file_name}', content)
-
+    lines = content.split('\n')
+    stop_index = lines.index('...') + 1  # 找到'...'所在行的索引，并加1以跳过该行
+    # 删除指定行之后的所有'#'开头的行
+    filtered_lines = lines[:stop_index] + [line for line in lines[stop_index:] if not line.startswith('#')]
+    result = '\n'.join(filtered_lines)
     # 将修改后的内容写回文件
     with open(target_path, 'w', encoding='utf-8') as file:
-        file.write(content)
+        file.write(result)
 
 
 if __name__ == '__main__':
