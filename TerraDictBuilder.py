@@ -47,7 +47,7 @@ def __prepend_to_file(file_path, text_to_prepend):
 
 # 辅助函数，用于查找包含特定内容的行号
 def __find_start_row(file_path, start_content):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         for i, line in enumerate(file):
             # 检查行内容
             if start_content in line:
