@@ -10,7 +10,7 @@ def config_dict():
     """
 
     # 读取配置文件
-    with open('config.yaml', 'r') as file:
+    with open('config.yaml', 'r',encoding='utf-8') as file:
         config = yaml.safe_load(file)
         return config
 

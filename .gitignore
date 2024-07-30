@@ -2,3 +2,7 @@
 sourceDict/
 # 排除输出文件
 targetDict/
+# PyCharm
+.idea
+# Python缓存
+__pycache__/

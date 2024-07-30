@@ -38,4 +38,4 @@ jobs:
           coauthor_name: mirtlecn
           coauthor_email: 76689045+mirtlecn@users.noreply.github.com
           directory: oh-my-rime/dicts
-          message: "AutoUpdate Rime-ice Dicts"
+          message: "AutoUpdate Radical pinyin Dicts"
