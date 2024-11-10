@@ -1,7 +1,11 @@
-import pandas as pd
+from datetime import date
 
-# 雾凇拼音 8105
-FILE_ICE_DICT = "./sourceDict/8105.dict.yaml"
+import pandas as pd
+from pypinyin import lazy_pinyin, Style
+
+# 雾凇拼音
+FILE_ICE_DICT_8105 = "./sourceDict/8105.dict.yaml"
+FILE_ICE_DICT_41448 = "./sourceDict/41448.dict.yaml"
 # 地球拼音基础
 FILE_TERRA_DICT = "./sourceDict/terra_pinyin_base.dict.yaml"
 # 输出文件
@@ -36,10 +40,9 @@ NEW_HEADER_DESC = """
 name: {name_placeholder}
 version: "{version_placeholder}"
 sort: by_weight
-max_phrase_length: 7
-min_phrase_weight: 100
 ...
 """
+
 
 # 辅助函数，用于查找包含特定内容的行号
 def __find_start_row(file_path, start_content):
@@ -50,6 +53,7 @@ def __find_start_row(file_path, start_content):
                 return i
     # 如果没有找到，返回None
     return None
+
 
 def __prepend_to_file(file_path, text_to_prepend):
     """
@@ -70,15 +74,33 @@ def __prepend_to_file(file_path, text_to_prepend):
         file.write(new_content)
 
 
-def read_keymap_from_ice():
+def __pinyin_transform_key(key):
+    """
+    将普通拼音转换为地球拼音
+    :param key: 普通字
+    :return:
+    """
+    # 将拼音转换为汉语拼音，使用pypinyin库并开启第五音
+    pinyin_result = lazy_pinyin(key, style=Style.TONE3, neutral_tone_with_five=True)
+    new_value = ' '.join(pinyin_result)
+    return new_value
+
+
+def read_keymap_from_ice(dict_source):
+    """
+    从雾凇拼音读取拼音表
+    :param dict_source:
+    :return:
+    """
     # 查找开始读取的行号
-    start_row = __find_start_row(FILE_ICE_DICT, '...')
+    start_row = __find_start_row(dict_source, '...')
     header = ['key', 'value', 'freq']
     # 确保找到了有效的行号，然后使用Pandas读取文件
     if start_row is not None:
-        data = pd.read_csv(FILE_ICE_DICT, sep='\t', names=header, skiprows=start_row + 1, comment='#')
+        data = pd.read_csv(dict_source, sep='\t', names=header, skiprows=start_row + 1, comment='#')
     else:
         print("The specified content '...' was not found in the file.")
+        exit(-1)
     return data
 
 
@@ -91,18 +113,41 @@ def read_keymap_from_terra():
         data = pd.read_csv(FILE_TERRA_DICT, sep='\t', names=header, skiprows=start_row + 1, comment='#')
     else:
         print("The specified content '...' was not found in the file.")
+        exit(-1)
     return data
 
+
 if __name__ == '__main__':
-    ice_data = read_keymap_from_ice()
-    ice_keymap = ice_data.set_index('key')['freq'].to_dict()
+    # 读取雾凇拼音
+    ice_data_8105 = read_keymap_from_ice(FILE_ICE_DICT_8105)
+    ice_data_41448 = read_keymap_from_ice(FILE_ICE_DICT_8105)
+    # 合并
+    ice_data_mix = pd.concat([ice_data_8105, ice_data_41448])
+    ice_data_mix = ice_data_mix.drop_duplicates()
+    ice_data_mix = ice_data_mix.reset_index(drop=True)
+    # 获取 雾凇 的词频
+    ice_keymap = ice_data_mix.set_index('key')['freq'].to_dict()
     terra_data = read_keymap_from_terra()
+    # 获取 地球拼音 的词频
+    terra_keymap = terra_data.set_index('key')['freq'].to_dict()
+    # 用于结果输出
+    result = list()
     for terra_row in terra_data.iterrows():
         key = terra_row[1]['key']
         if key in ice_keymap:
-            terra_row[1]['freq'] = ice_keymap[key]
-        else:
-            terra_row[1]['freq'] = 1
-    terra_data.to_csv(FILE_OUTPUT, sep='\t', header=None, index=False)
-    new_header_desc_string = NEW_HEADER_DESC.format(name_placeholder="terra_pinyin_base", version_placeholder="20241030")
+            result.append({'key': key, 'value': terra_row[1]['value'], 'freq': ice_keymap[key]})
+        elif len(key) == 1:
+            result.append({'key': key, 'value': terra_row[1]['value'], 'freq': 1})
+    # 反向查看，如果 ice_data_mix 中存在 result 不存在的词，在 result 中添加
+    for ice_row in ice_data_mix.iterrows():
+        key = ice_row[1]['key']
+        if key not in terra_keymap:
+            result.append({'key': key, 'value': __pinyin_transform_key(key), 'freq': ice_row[1]['freq']})
+    # list 转换为 DataFrame
+    resultDataFrame = pd.DataFrame(result)
+    resultDataFrame.to_csv(FILE_OUTPUT, sep='\t', header=None, index=False)
+    # 当前日期 YYYYMMDD
+    versionCode = date.today().strftime("%Y%m%d")
+    new_header_desc_string = NEW_HEADER_DESC.format(name_placeholder="terra_pinyin_base",
+                                                    version_placeholder=versionCode)
     __prepend_to_file(FILE_OUTPUT, new_header_desc_string)
