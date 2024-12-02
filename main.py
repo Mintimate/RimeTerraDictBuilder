@@ -1,5 +1,6 @@
 import os
 
+from Terra8105Builder import terra_8105_make
 from custom_tools import config_dict, say_somethings
 from autoDownloadIceDict import download_dict_with_request
 from autoDownloadIcePhrase import download_phrase_with_request
@@ -26,6 +27,8 @@ if __name__ == '__main__':
         download_phrase_with_request(source_save_path=DOWNLOAD_PATH, target_save_path=CONVERT_TARGET,
                                      download_url=DOWNLOAD_PHRASE_ITEM[download_item],
                                      target_file_name=download_item)
+    say_somethings("构造地球评议基础词典")
+    terra_8105_make()
     say_somethings("将其中的字典转换为地球拼音字典")
     terra_dict_start("./targetDict/rime_ice.base.dict.yaml",
                      "./targetDict/terra_rime_ice.base.dict.yaml",

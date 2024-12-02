@@ -1,3 +1,4 @@
+import os.path
 from datetime import date
 
 import pandas as pd
@@ -6,7 +7,7 @@ from pypinyin import lazy_pinyin, Style
 # 雾凇拼音
 FILE_ICE_DICT_8105 = "./sourceDict/8105.dict.yaml"
 # 地球拼音基础
-FILE_TERRA_DICT = "./sourceDict/terra_pinyin_base.dict.yaml"
+FILE_TERRA_DICT = "./asserts/terraMap8105.yaml"
 # 输出文件
 FILE_OUTPUT = "./targetDict/terra.8105.dict.yaml"
 
@@ -15,7 +16,9 @@ NEW_HEADER_DESC = """
 # Rime dictionary
 # encoding: utf-8
 
-# 使用Python3 pypinyin 自动转换
+# 加工逻辑:
+#  - 从雾凇拼音读取拼音表
+#  - 从地球拼音人工复合词表读取拼音表(感谢 @Jian787 的人工复合)
 # Project: https://github.com/Mintimate/RimeTerraDictBuilder
 # WebSite:
 #  - 薄荷输入法: https://www.mintimate.cc
@@ -85,7 +88,7 @@ def __pinyin_transform_key(key):
     return new_value
 
 
-def read_keymap_from_ice(dict_source):
+def __read_keymap_from_ice(dict_source):
     """
     从雾凇拼音读取拼音表
     :param dict_source:
@@ -103,39 +106,49 @@ def read_keymap_from_ice(dict_source):
     return data
 
 
-def read_keymap_from_terra():
+def __read_keymap_from_terra(dict_source):
     # 查找开始读取的行号
-    start_row = __find_start_row(FILE_TERRA_DICT, '...')
+    start_row = __find_start_row(dict_source, '...') if None else 0
     header = ['key', 'value', 'freq']
     # 确保找到了有效的行号，然后使用Pandas读取文件
     if start_row is not None:
-        data = pd.read_csv(FILE_TERRA_DICT, sep='\t', names=header, skiprows=start_row + 1, comment='#')
+        data = pd.read_csv(dict_source, sep='\t', names=header, skiprows=start_row + 1, comment='#')
     else:
         print("The specified content '...' was not found in the file.")
         exit(-1)
     return data
 
 
-if __name__ == '__main__':
-    # 读取雾凇拼音
-    ice_data_8105 = read_keymap_from_ice(FILE_ICE_DICT_8105)
-    # 获取 雾凇 的词频
+def terra_8105_make():
+    # 读取雾凇拼音构造词频表
+    ice_data_8105 = __read_keymap_from_ice(FILE_ICE_DICT_8105)
     ice_keymap = ice_data_8105.set_index('key')['freq'].to_dict()
-    terra_data = read_keymap_from_terra()
-    # 获取 地球拼音 的词频
+    # 读取地球拼音人工复合词表
+    terra_data = __read_keymap_from_terra(FILE_TERRA_DICT)
     terra_keyFreqMap = terra_data.set_index('key')['freq'].to_dict()
     terra_keyValueMap = terra_data.set_index('key')['value'].to_dict()
     # 用于结果输出
     result = list()
-    # 反向查看，如果 ice_data_mix 中存在 result 不存在的词，在 result 中添加
     for ice_row in ice_data_8105.iterrows():
         key = ice_row[1]['key']
+        if key in terra_keyValueMap:
+            continue
         result.append({'key': key, 'value': __pinyin_transform_key(key), 'freq': ice_row[1]['freq']})
+    # 使用地球拼音人工复合词表补充
+    for terra_patch_row in terra_data.iterrows():
+        result.append({'key': terra_patch_row[1]['key'], 'value': terra_patch_row[1]['value'],
+                       'freq': terra_patch_row[1]['freq']})
     # list 转换为 DataFrame
     resultDataFrame = pd.DataFrame(result)
     resultDataFrame.to_csv(FILE_OUTPUT, sep='\t', header=None, index=False)
     # 当前日期 YYYYMMDD
     versionCode = date.today().strftime("%Y%m%d")
-    new_header_desc_string = NEW_HEADER_DESC.format(name_placeholder="terra.8105",
+    terra_output_name = os.path.basename(FILE_OUTPUT).replace('.dict.yaml', '')
+    new_header_desc_string = NEW_HEADER_DESC.format(name_placeholder=terra_output_name,
                                                     version_placeholder=versionCode)
     __prepend_to_file(FILE_OUTPUT, new_header_desc_string)
+
+
+if __name__ == '__main__':
+    terra_8105_make()
+    print("地球拼音词典构造完成")
