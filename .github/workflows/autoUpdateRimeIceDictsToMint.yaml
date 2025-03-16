@@ -2,7 +2,7 @@ name: 自动更新雾凇拼音词典到薄荷输入法
 
 on:
   schedule:
-    - cron: "0 15 5 * *"
+    - cron: "0 15 17 * *"
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
       - name: Commit & Push changes
         uses: actions-js/push@master
         with:
-          github_token: ${{ secrets.DEPLOY_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           repository: Mintimate/oh-my-rime
           coauthor_name: gaboolic
           coauthor_email: 3831173+3831173@users.noreply.github.com

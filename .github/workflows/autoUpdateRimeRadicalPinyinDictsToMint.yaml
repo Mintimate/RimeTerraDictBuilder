@@ -2,7 +2,7 @@ name: 自动更新拆字词典到薄荷输入法
 
 on:
   schedule:
-    - cron: "0 15 15 * *"
+    - cron: "0 15 16 * *"
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
       - name: Commit & Push changes
         uses: actions-js/push@master
         with:
-          github_token: ${{ secrets.DEPLOY_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           repository: Mintimate/oh-my-rime
           coauthor_name: mirtlecn
           coauthor_email: 76689045+mirtlecn@users.noreply.github.com
