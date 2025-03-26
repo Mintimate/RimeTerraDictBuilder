@@ -1,6 +1,11 @@
 name: 自动更新雾凇拼音词典到薄荷输入法
 
+# 定时和 main 推送触发
+
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: "0 18 17 * *"
 
